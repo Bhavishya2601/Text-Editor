@@ -18,11 +18,11 @@ public class AdvancedTextEd extends JFrame {
     private JCheckBoxMenuItem wordWrapItem;
     private boolean isDarkMode = false;
     private HashSet<String> dictionary; // for spell checker
-    private Stack<String> undoStack = new Stack<>();
-    private Stack<String> redoStack = new Stack<>();
+    private Stack<String> undoStack = new Stack<>();//for undo operation
+    private Stack<String> redoStack = new Stack<>();//for redo operation
 
     public AdvancedTextEd() {
-        setTitle("Advanced Text Editor");
+        setTitle("Text Editor");
         setSize(800, 600);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
 
@@ -70,33 +70,40 @@ public class AdvancedTextEd extends JFrame {
 
         setVisible(true);
     }
+    private boolean isProgrammaticChange = false;
 
     private void updateUndoStack() {
+    if (isProgrammaticChange) return;
+
     String currentText = textArea.getText();
     if (undoStack.isEmpty() || !undoStack.peek().equals(currentText)) {
         undoStack.push(currentText);
-        // Clear redo history since it's a new operation
         redoStack.clear();
     }
 }
 
 
-   private void customUndo() {
+
+  private void customUndo() {
     if (undoStack.size() > 1) {
+        isProgrammaticChange = true;
         String currentState = undoStack.pop();
         redoStack.push(currentState);
-        textArea.setText(undoStack.peek()); // Peek at the new top
+        textArea.setText(undoStack.peek());
+        isProgrammaticChange = false;
     }
 }
 
-
-    private void customRedo() {
-        if (!redoStack.isEmpty()) {
-            String nextState = redoStack.pop();
-            textArea.setText(nextState);
-            undoStack.push(nextState);
-        }
+private void customRedo() {
+    if (!redoStack.isEmpty()) {
+        isProgrammaticChange = true;
+        String nextState = redoStack.pop();
+        textArea.setText(nextState);
+        undoStack.push(nextState);
+        isProgrammaticChange = false;
     }
+}
+
 
     private void loadDictionary() {
         dictionary = new HashSet<>();
@@ -251,7 +258,7 @@ public class AdvancedTextEd extends JFrame {
         if (option == JFileChooser.APPROVE_OPTION) {
             currentFile = fileChooser.getSelectedFile();
             saveFile();
-            setTitle(currentFile.getName() + " - Advanced Text Editor");
+            setTitle(currentFile.getName() + " - Text Editor");
         }
     }
 
