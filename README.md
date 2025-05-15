@@ -37,7 +37,3 @@ A powerful, user-friendly **text editor** built using **Java Swing**, packed wit
 ## 📜 License
 
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
-
----
-
-Let me know if you'd like a `.jar` packaging guide, GitHub badges, or to auto-load the dictionary as a resource in the compiled build.
